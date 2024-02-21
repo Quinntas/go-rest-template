@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"github.com/joho/godotenv"
+	"go-rest-template/api/shared/useCases/healthCheck"
 	"go-rest-template/internal/app/utils"
 	"go-rest-template/internal/app/web"
 	"log"
@@ -16,19 +17,15 @@ func main() {
 		panic(err)
 	}
 
+	// TODO: create struct for environment variables and set them elsewhere
 	var port = os.Getenv("PORT")
-
 	if port == "" {
 		panic("PORT environment variable is required")
 	}
 
 	utils.Print("[Server] Running on port", port)
 
-	web.GET("/", func(response http.ResponseWriter, request *http.Request, data web.DecodedRequest[struct{}]) {
-		web.JsonResponse(response, http.StatusOK, map[string]interface{}{
-			"message": "Hello, world!",
-		})
-	})
+	web.GET("/", healthCheck.UseCase)
 
 	log.Fatal(http.ListenAndServe(fmt.Sprintf(":%s", port), web.LogRequest(http.DefaultServeMux)))
 }
