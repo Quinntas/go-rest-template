@@ -9,7 +9,7 @@ import (
 	"net/http"
 )
 
-func UseCase(response http.ResponseWriter, request *http.Request, decodedRequest web.DecodedRequest[DTO]) {
+func UseCase(response http.ResponseWriter, request *http.Request, decodedRequest *web.DecodedRequest[DTO]) {
 	email, err := userValueObjects.ValidateEmail(decodedRequest.Json.Email)
 	if err != nil {
 		web.HandleHttpError(response, *err)

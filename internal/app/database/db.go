@@ -16,28 +16,28 @@ func MustExec(query string, args ...interface{}) sql.Result {
 	return db.MustExec(query, args...)
 }
 
-func QueryRow[T interface{}](query string, args ...interface{}) (T, error) {
-	var row T
-	err := db.QueryRowx(query, args...).StructScan(&row)
+func QueryRow[T interface{}](query string, args ...interface{}) (*T, error) {
+	var result T
+	err := db.QueryRowx(query, args...).StructScan(&result)
 	if err != nil {
-		return row, err
+		return nil, err
 	}
-	return row, nil
+	return &result, nil
 }
 
-func Query[T interface{}](query string, args ...interface{}) ([]T, error) {
+func Query[T interface{}](query string, args ...interface{}) ([]*T, error) {
 	rows, err := db.Queryx(query, args...)
 	if err != nil {
 		return nil, err
 	}
-	results := make([]T, 0)
+	results := make([]*T, 0)
 	for rows.Next() {
 		var row T
 		err = rows.StructScan(&row)
 		if err != nil {
 			return nil, err
 		}
-		results = append(results, row)
+		results = append(results, &row)
 	}
 	return results, nil
 }

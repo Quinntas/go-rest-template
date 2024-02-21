@@ -5,7 +5,7 @@ import (
 	"net/http"
 )
 
-type HandlerFunc[T interface{}] func(response http.ResponseWriter, request *http.Request, data DecodedRequest[T])
+type HandlerFunc[T interface{}] func(response http.ResponseWriter, request *http.Request, data *DecodedRequest[T])
 
 type MiddlewareFunc[T interface{}] func(HandlerFunc[T]) HandlerFunc[T]
 
@@ -38,7 +38,7 @@ func handleRequest[T interface{}](method, path string, handler HandlerFunc[T], m
 			finalHandler = middleware(finalHandler)
 		}
 
-		finalHandler(response, request, decodedRequest)
+		finalHandler(response, request, &decodedRequest)
 	}
 }
 

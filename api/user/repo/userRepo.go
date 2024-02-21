@@ -8,10 +8,10 @@ import (
 	"go-rest-template/internal/app/database"
 )
 
-func GetWithId(id *int) (user.User, error) {
-	result, e := database.QueryRow[user.RawUser]("SELECT * FROM ? where id=?", userConstants.UserTableName, 1)
+func GetWithId(id *int) (*user.User, error) {
+	result, e := database.QueryRow[user.RawUser]("SELECT * FROM "+userConstants.UserTableName+"where id=?", 1)
 	if e != nil {
-		return user.User{}, e
+		return nil, e
 	}
 	return userMapper.ToDomain(result), nil
 }

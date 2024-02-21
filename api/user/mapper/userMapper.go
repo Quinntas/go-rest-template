@@ -7,11 +7,11 @@ import (
 	"go-rest-template/internal/app/utils"
 )
 
-func ToDomain(rawUser user.RawUser) user.User {
+func ToDomain(rawUser *user.RawUser) *user.User {
 	createdAt, _ := utils.StringToTime(rawUser.CreatedAt)
 	updatedAt, _ := utils.StringToTime(rawUser.UpdatedAt)
 
-	return user.User{
+	return &user.User{
 		ID:        shared.ID{Value: rawUser.ID},
 		UUID:      shared.UUID{Value: rawUser.UUID},
 		CreatedAt: shared.Date{Value: createdAt},
