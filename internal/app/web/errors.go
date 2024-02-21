@@ -4,7 +4,16 @@ import (
 	"net/http"
 )
 
-func HttpError(response http.ResponseWriter, code int, body interface{}) {
+type HttpError struct {
+	Code int
+	Body interface{}
+}
+
+func HandleHttpError(response http.ResponseWriter, err HttpError) {
+	JsonResponse(response, err.Code, err.Body)
+}
+
+func CustomError(response http.ResponseWriter, code int, body interface{}) {
 	JsonResponse(response, code, body)
 }
 

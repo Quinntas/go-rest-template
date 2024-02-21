@@ -1,4 +1,9 @@
-CREATE TABLE IF NOT EXISTS Users (
+package userConstants
+
+const (
+	UserTableName   = "Users"
+	UserTableSchema = `
+		CREATE TABLE IF NOT EXISTS Users (
         id INT AUTO_INCREMENT NOT NULL,
         pid VARCHAR(191) NOT NULL,
         email varchar(191) NOT NULL,
@@ -9,4 +14,5 @@ CREATE TABLE IF NOT EXISTS Users (
         PRIMARY KEY (id),
         UNIQUE KEY (pid),
         UNIQUE KEY (email)
-);
+	);`
+)

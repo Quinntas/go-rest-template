@@ -1,9 +1,11 @@
-package user
+package userValueObjects
+
+import "go-rest-template/internal/app/web"
 
 type Email struct {
 	Value string
 }
 
-func validateEmail(value string) (Email, error) {
+func ValidateEmail(value string) (Email, *web.HttpError) {
 	return Email{Value: value}, nil
 }

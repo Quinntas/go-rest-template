@@ -1,6 +1,8 @@
-package user
+package userValueObjects
 
-import "errors"
+import (
+	"go-rest-template/internal/app/web"
+)
 
 const (
 	MaxUserNameLength = 50
@@ -11,11 +13,18 @@ type Name struct {
 	Value string
 }
 
-func validateName(value string) (Name, error) {
+func ValidateName(value string) (Name, *web.HttpError) {
+	nameError := web.HttpError{
+		Code: 422,
+		Body: map[string]interface{}{
+			"message": "Invalid name",
+			"key":     "name",
+		},
+	}
 	if len(value) > MaxUserNameLength {
-		return Name{}, errors.New("name is too long")
+		return Name{}, &nameError
 	} else if len(value) < MinUserNameLength {
-		return Name{}, errors.New("name is too short")
+		return Name{}, &nameError
 	}
 	return Name{Value: value}, nil
 }
