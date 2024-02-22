@@ -1,11 +1,36 @@
 package userValueObjects
 
-import "go-rest-template/internal/app/web"
+import (
+	"go-rest-template/internal/app/utils"
+	"go-rest-template/internal/app/web"
+)
 
 type Password struct {
 	Value string
 }
 
-func ValidatePassword(value string) (Password, *web.HttpError) {
-	return Password{Value: value}, nil
+func (p *Password) Encrypt() *Password {
+	p.Value, _ = utils.GenerateDefaultEncryption(p.Value)
+	return p
+}
+
+func ValidatePassword(value string) (*Password, *web.HttpError) {
+	if len(value) < 6 {
+		return nil, &web.HttpError{
+			Code: 422,
+			Body: map[string]interface{}{
+				"message": "Password is too short",
+				"key":     "password",
+			},
+		}
+	} else if len(value) > 20 {
+		return nil, &web.HttpError{
+			Code: 422,
+			Body: map[string]interface{}{
+				"message": "Password is too long",
+				"key":     "password",
+			},
+		}
+	}
+	return &Password{Value: value}, nil
 }

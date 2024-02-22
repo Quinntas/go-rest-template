@@ -8,6 +8,8 @@ import (
 type EnvVariables struct {
 	Port        string
 	DatabaseURL string
+	PEPPER      string
+	JwtSecret   string
 }
 
 var Env *EnvVariables
@@ -21,5 +23,7 @@ func LoadEnv() {
 	Env = &EnvVariables{
 		Port:        os.Getenv("PORT"),
 		DatabaseURL: os.Getenv("DATABASE_URL"),
+		PEPPER:      os.Getenv("PEPPER"),
+		JwtSecret:   os.Getenv("JWT_SECRET"),
 	}
 }

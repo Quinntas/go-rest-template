@@ -9,39 +9,41 @@ import (
 	"net/http"
 )
 
-func UseCase(response http.ResponseWriter, request *http.Request, decodedRequest *web.DecodedRequest[DTO]) {
+func UseCase(response http.ResponseWriter, request *http.Request, decodedRequest *web.DecodedRequest[DTO]) *web.HttpError {
 	email, err := userValueObjects.ValidateEmail(decodedRequest.Json.Email)
 	if err != nil {
-		web.HandleHttpError(response, *err)
+		return err
 	}
 
 	name, err := userValueObjects.ValidateName(decodedRequest.Json.Name)
 	if err != nil {
-		web.HandleHttpError(response, *err)
+		return err
 	}
 
 	password, err := userValueObjects.ValidatePassword(decodedRequest.Json.Password)
 	if err != nil {
-		web.HandleHttpError(response, *err)
+		return err
 	}
 
 	_, dbErr := userRepo.Create(&user.User{
-		Email:    email,
-		Name:     name,
-		Password: password,
+		Email:    *email,
+		Name:     *name,
+		Password: *password.Encrypt(),
 		UUID:     shared.CreateV4(),
 	})
 
 	if dbErr != nil {
-		web.JsonResponse(response, http.StatusBadRequest, map[string]interface{}{
-			"message": dbErr.Error(),
-		})
-		return
+		return &web.HttpError{
+			Code: http.StatusBadRequest,
+			Body: map[string]interface{}{
+				"message": dbErr.Error(),
+			},
+		}
 	}
 
-	web.JsonResponse(response, http.StatusCreated, map[string]interface{}{
+	web.JsonResponse(response, http.StatusCreated, &map[string]interface{}{
 		"message": "ok",
 	})
 
-	return
+	return nil
 }

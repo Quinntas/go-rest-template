@@ -6,6 +6,6 @@ type Email struct {
 	Value string
 }
 
-func ValidateEmail(value string) (Email, *web.HttpError) {
-	return Email{Value: value}, nil
+func ValidateEmail(value string) (*Email, *web.HttpError) {
+	return &Email{Value: value}, nil
 }
