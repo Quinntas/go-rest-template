@@ -16,7 +16,7 @@ func ConnectRedis(redisUrl string) {
 	redisClient = redis.NewClient(opt)
 }
 
-func Set[T string](key string, value string, expiration time.Duration) error {
+func Set[T string](key string, value T, expiration time.Duration) error {
 	ctx := context.Background()
 	return redisClient.Set(ctx, key, value, expiration).Err()
 }
