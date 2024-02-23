@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"go-rest-template/api/shared/useCases/healthCheck"
+	userMiddleware "go-rest-template/api/user/infra/middleware"
 	"go-rest-template/api/user/useCases/createUser"
 	"go-rest-template/api/user/useCases/login"
 	"go-rest-template/internal/app/database"
@@ -23,6 +24,7 @@ func main() {
 
 	web.GET("/", healthCheck.UseCase)
 	web.POST("/api/v1/users", createUser.UseCase)
+	web.POST("/api/v1/users/usingMiddleware", createUser.UseCase, userMiddleware.EnsureUserAuthenticated[createUser.DTO])
 	web.POST("/api/v1/users/login", login.UseCase)
 
 	log.Fatal(http.ListenAndServe(fmt.Sprintf(":%s", utils.Env.Port), web.LogRequest(http.DefaultServeMux)))
