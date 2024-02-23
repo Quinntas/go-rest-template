@@ -39,9 +39,9 @@ func UseCase(response http.ResponseWriter, request *http.Request, decodedRequest
 		Id:    user.ID.Value,
 		Email: user.Email.Value,
 		UUID:  user.UUID.Value,
-	}, TOKEN_EXPIRATION_TIME)
+	}, TokenExpirationTime)
 
-	err = redis.Set(TOKEN_REDIS_KEY+user.UUID.Value, privateToken, TOKEN_EXPIRATION_TIME)
+	err = redis.Set(TokenRedisKey+user.UUID.Value, privateToken, TokenExpirationTime)
 	if err != nil {
 		return &web.HttpError{
 			Code: http.StatusInternalServerError,
@@ -62,7 +62,7 @@ func UseCase(response http.ResponseWriter, request *http.Request, decodedRequest
 
 	publicToken, err := utils.GenerateJsonWebToken[PublicTokenClaim](&PublicTokenClaim{
 		UUID: user.UUID.Value,
-	}, TOKEN_EXPIRATION_TIME)
+	}, TokenExpirationTime)
 
 	if err != nil {
 		return &web.HttpError{
@@ -75,8 +75,8 @@ func UseCase(response http.ResponseWriter, request *http.Request, decodedRequest
 
 	web.JsonResponse[ResponseDTO](response, http.StatusOK, &ResponseDTO{
 		Token:      publicToken,
-		ExpiresIn:  int(TOKEN_EXPIRATION_TIME.Seconds()),
-		ExpireDate: utils.TimeToString(time.Now().Add(TOKEN_EXPIRATION_TIME)),
+		ExpiresIn:  int(TokenExpirationTime.Seconds()),
+		ExpireDate: utils.TimeToString(time.Now().Add(TokenExpirationTime)),
 	})
 
 	return nil
