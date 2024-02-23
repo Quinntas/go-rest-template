@@ -42,11 +42,10 @@ func Query[T interface{}](query string, args ...interface{}) ([]*T, error) {
 	return results, nil
 }
 
-func Connect(databaseUrl string) (err error) {
+func ConnectDB(databaseUrl string) {
 	db = sqlx.MustConnect("mysql", databaseUrl)
-	err = db.Ping()
+	err := db.Ping()
 	if err != nil {
 		panic(err)
 	}
-	return nil
 }

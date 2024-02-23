@@ -10,6 +10,7 @@ type EnvVariables struct {
 	DatabaseURL string
 	PEPPER      string
 	JwtSecret   string
+	RedisURL    string
 }
 
 var Env *EnvVariables
@@ -25,5 +26,6 @@ func LoadEnv() {
 		DatabaseURL: os.Getenv("DATABASE_URL"),
 		PEPPER:      os.Getenv("PEPPER"),
 		JwtSecret:   os.Getenv("JWT_SECRET"),
+		RedisURL:    os.Getenv("REDIS_URL"),
 	}
 }

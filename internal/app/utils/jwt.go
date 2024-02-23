@@ -5,7 +5,7 @@ import (
 	"time"
 )
 
-func GenerateJsonWebToken[T interface{} | string](data *T, expirationTime time.Time) (string, error) {
+func GenerateJsonWebToken[T interface{} | string](data *T, expirationTime time.Duration) (string, error) {
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256,
 		jwt.MapClaims{
 			"data": *data,

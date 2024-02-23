@@ -6,6 +6,7 @@ import (
 	"go-rest-template/api/user/useCases/createUser"
 	"go-rest-template/api/user/useCases/login"
 	"go-rest-template/internal/app/database"
+	"go-rest-template/internal/app/redis"
 	"go-rest-template/internal/app/utils"
 	"go-rest-template/internal/app/web"
 	"log"
@@ -15,10 +16,8 @@ import (
 func main() {
 	utils.LoadEnv()
 
-	err := database.Connect(utils.Env.DatabaseURL)
-	if err != nil {
-		panic(err)
-	}
+	database.ConnectDB(utils.Env.DatabaseURL)
+	redis.ConnectRedis(utils.Env.RedisURL)
 
 	utils.Print("[Server] Running on port", utils.Env.Port)
 
