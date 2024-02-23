@@ -15,6 +15,14 @@ type EnvVariables struct {
 
 var Env *EnvVariables
 
+func getEnv(key string, required bool) string {
+	value := os.Getenv(key)
+	if required && value == "" {
+		panic("Missing required environment variable: " + key)
+	}
+	return value
+}
+
 func LoadEnv() {
 	err := godotenv.Load()
 	if err != nil {
@@ -22,10 +30,10 @@ func LoadEnv() {
 	}
 
 	Env = &EnvVariables{
-		Port:        os.Getenv("PORT"),
-		DatabaseURL: os.Getenv("DATABASE_URL"),
-		PEPPER:      os.Getenv("PEPPER"),
-		JwtSecret:   os.Getenv("JWT_SECRET"),
-		RedisURL:    os.Getenv("REDIS_URL"),
+		Port:        getEnv("PORT", true),
+		DatabaseURL: getEnv("DATABASE_URL", true),
+		PEPPER:      getEnv("PEPPER", true),
+		JwtSecret:   getEnv("JWT_SECRET", true),
+		RedisURL:    getEnv("REDIS_URL", true),
 	}
 }
