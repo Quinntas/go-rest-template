@@ -3,6 +3,7 @@ package userValueObjects
 import (
 	"go-rest-template/internal/app/utils"
 	"go-rest-template/internal/app/web"
+	"net/http"
 )
 
 type Password struct {
@@ -17,7 +18,7 @@ func (p *Password) Encrypt() *Password {
 func ValidatePassword(value string) (*Password, *web.HttpError) {
 	if len(value) < 6 {
 		return nil, &web.HttpError{
-			Code: 422,
+			Code: http.StatusUnprocessableEntity,
 			Body: map[string]interface{}{
 				"message": "Password is too short",
 				"key":     "password",
@@ -25,7 +26,7 @@ func ValidatePassword(value string) (*Password, *web.HttpError) {
 		}
 	} else if len(value) > 20 {
 		return nil, &web.HttpError{
-			Code: 422,
+			Code: http.StatusUnprocessableEntity,
 			Body: map[string]interface{}{
 				"message": "Password is too long",
 				"key":     "password",

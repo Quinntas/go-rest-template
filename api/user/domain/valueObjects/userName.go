@@ -2,6 +2,7 @@ package userValueObjects
 
 import (
 	"go-rest-template/internal/app/web"
+	"net/http"
 )
 
 const (
@@ -16,7 +17,7 @@ type Name struct {
 func ValidateName(value string) (*Name, *web.HttpError) {
 	if len(value) > MaxUserNameLength {
 		return nil, &web.HttpError{
-			Code: 422,
+			Code: http.StatusUnprocessableEntity,
 			Body: map[string]interface{}{
 				"message": "Name is too long",
 				"key":     "name",
@@ -24,7 +25,7 @@ func ValidateName(value string) (*Name, *web.HttpError) {
 		}
 	} else if len(value) < MinUserNameLength {
 		return nil, &web.HttpError{
-			Code: 422,
+			Code: http.StatusUnprocessableEntity,
 			Body: map[string]interface{}{
 				"message": "Name is too short",
 				"key":     "name",

@@ -1,6 +1,7 @@
 package login
 
 import (
+	userValueObjects "go-rest-template/api/user/domain/valueObjects"
 	userRepo "go-rest-template/api/user/repo"
 	"go-rest-template/internal/app/redis"
 	"go-rest-template/internal/app/utils"
@@ -10,7 +11,12 @@ import (
 )
 
 func UseCase(response http.ResponseWriter, request *http.Request, decodedRequest *web.DecodedRequest[DTO]) *web.HttpError {
-	user, err := userRepo.GetWithEmail(decodedRequest.Json.Email)
+	email, validationErr := userValueObjects.ValidateEmail(decodedRequest.Json.Email)
+	if validationErr != nil {
+		return validationErr
+	}
+
+	user, err := userRepo.GetWithEmail(email.Value)
 	if err != nil {
 		return &web.HttpError{
 			Code: http.StatusNotFound,
