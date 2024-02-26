@@ -7,13 +7,11 @@ import (
 
 type HandlerFunc[T interface{}] func(response http.ResponseWriter, request *http.Request, data *DecodedRequest[T]) *HttpError
 
-type MiddlewareFunc[T interface{}] func(HandlerFunc[T]) HandlerFunc[T]
-
 type DecodedRequest[T interface{}] struct {
 	Json T
 }
 
-func handleRequest[T interface{}](method, path string, handler HandlerFunc[T], middlewares ...MiddlewareFunc[T]) http.HandlerFunc {
+func handleRequest[T interface{}](method, path string, handler HandlerFunc[T]) http.HandlerFunc {
 	return func(response http.ResponseWriter, request *http.Request) {
 		if request.Method != method {
 			MethodNotAllowed(response)
@@ -33,12 +31,7 @@ func handleRequest[T interface{}](method, path string, handler HandlerFunc[T], m
 			}
 		}
 
-		finalHandler := handler
-		for _, middleware := range middlewares {
-			finalHandler = middleware(finalHandler)
-		}
-
-		err := finalHandler(response, request, &decodedRequest)
+		err := handler(response, request, &decodedRequest)
 		if err != nil {
 			_ = HandleHttpError(response, err)
 			return
@@ -46,10 +39,10 @@ func handleRequest[T interface{}](method, path string, handler HandlerFunc[T], m
 	}
 }
 
-func GET[T interface{}](path string, handler HandlerFunc[T], middlewares ...MiddlewareFunc[T]) {
-	http.HandleFunc(path, handleRequest[T](http.MethodGet, path, handler, middlewares...))
+func GET[T interface{}](path string, handler HandlerFunc[T]) {
+	http.HandleFunc(path, handleRequest[T](http.MethodGet, path, handler))
 }
 
-func POST[T interface{}](path string, handler HandlerFunc[T], middlewares ...MiddlewareFunc[T]) {
-	http.HandleFunc(path, handleRequest[T](http.MethodPost, path, handler, middlewares...))
+func POST[T interface{}](path string, handler HandlerFunc[T]) {
+	http.HandleFunc(path, handleRequest[T](http.MethodPost, path, handler))
 }
